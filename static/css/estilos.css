@@ -1,0 +1,139 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto+Flex:opsz@8..144&display=swap');
+
+*{
+    font-family: "Roboto Flex", sans-serif;
+    margin: 0;
+}
+
+body {
+    background-image: url(/static/imagenes/bkgmarca.png);;
+    color:#E7DCCC;
+}
+
+.contenedor-centrado {
+    display:flex;
+    width: 100%;
+    justify-content: center;
+    font-size: 23px;
+}
+
+.logo-centrado{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 5px;
+    margin-top: 120px;
+}
+
+.navbar-index{
+    margin: 0;
+    padding: 0;
+    top: 0;
+    width: 100vw;
+    height: 100px;
+    background-color: #35142C;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center; 
+    overflow: hidden;
+    margin-bottom: 20px;
+    position: fixed !important; 
+    box-shadow: 10px 10px 20px rgba(0, 0, 0, 0.5);
+}
+
+
+.logo-nav{
+    overflow: hidden;
+    max-width: 150px;
+}
+
+p {
+    background-color: #E7DCCC;
+    max-width: 400px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+h1, h2 {
+    text-align: center;
+    color: #E7DCCC;
+}
+
+.logo-centrado h1 {
+    padding-left: 20px;
+    margin-bottom: 70px;
+
+}
+
+form {
+    max-width: 400px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #35142C;
+    border: 1px solid lightslategray;
+    border-radius: 5px;
+    box-shadow: 10px 10px 20px rgba(0, 0, 0, 0.5);
+}
+
+table {
+    max-width: 90%;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #35142C;
+    border: 1px solid lightslategray;
+    border-radius: 5px;
+    box-shadow: 10px 10px 20px rgba(0, 0, 0, 0.5);
+}
+
+label {
+    display: block;
+    margin-bottom: 5px;
+}
+
+input[type="text"],
+input[type="number"] {
+    width: 90%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #cccccc;
+    border-radius: 5px;
+}
+
+button, a {
+    padding: 8px;
+    margin:4px;
+    background-color: #E4AC5C;
+    color: #35142C;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    text-decoration: none;
+    font-size: 85%;
+    font-weight: 800;
+}
+
+button:hover, a:hover {
+    background-color: black;
+    color:#E4AC5C
+}
+
+.tabla-productos {
+    width: 60%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+}
+
+.tabla-productos th, .tabla-productos td {
+    padding: 12px 15px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+.tabla-productos th {
+    background-color: #E4AC5C;
+    color: #333;
+}
+
+.tabla-productos td {
+    word-wrap: break-word;
+}
