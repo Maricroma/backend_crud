@@ -5,6 +5,7 @@ import mysql.connector
 from werkzeug.utils import secure_filename
 import os
 import time
+from config_local import RUTA_DESTINO, DB_CONFIG
 
 app = Flask(__name__)
 CORS(app) 
@@ -83,17 +84,14 @@ class Catalogo:
 #--------------------------------------------------------------------
 # Cuerpo del programa
 #--------------------------------------------------------------------
-catalogo = Catalogo(host='localhost', user='root', password='Pilar*49', database='romanov_db')
+catalogo = Catalogo(host=DB_CONFIG['host'], user=DB_CONFIG['root'], password=DB_CONFIG['password'], database=DB_CONFIG['database'])
 #catalogo = Catalogo(host='USUARIO.mysql.pythonanywhere-services.com', user='USUARIO', password='CLAVE', database='USUARIO$romanov_db')
 
-
-# Carpeta para guardar las imagenes.
-RUTA_DESTINO = './static/imagenes/'
 
 #Al subir al servidor, deberá utilizarse la siguiente ruta. USUARIO debe ser reemplazado por el nombre de usuario de Pythonanywhere
 #RUTA_DESTINO = '/home/USUARIO/mysite/static/imagenes'
 
-#--------------------------------------------------------------------
+#--------------------------------------------------------------------S
 # Listar todos los productos
 #--------------------------------------------------------------------
 @app.route("/productos", methods=["GET"])

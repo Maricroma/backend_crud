@@ -1,4 +1,5 @@
 # backend_crud
-Proyecto desarrollado en el curso de FullStack Python 2024
+Proyecto CRUD desarrollado en el curso de FullStack Python 2024
 
-Python + Flask
+backend con Python + Flask
+frontend con HTML + CSS + JavaScript

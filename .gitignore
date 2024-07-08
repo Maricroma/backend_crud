@@ -8,7 +8,7 @@ __pycache__/
 
 # Config files
 config.py
-config.local.py
+config_local.py
 
 # Distribution / packaging
 .Python
@@ -133,6 +133,7 @@ venv/
 ENV/
 env.bak/
 venv.bak/
+fullstack_python/
 
 # Spyder project settings
 .spyderproject
