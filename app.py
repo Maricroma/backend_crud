@@ -1,14 +1,13 @@
 from flask import Flask, request, jsonify
-from flask import request
-from flask_cors import CORS
+from flask_cors import CORS, cross_origin
 import mysql.connector
 from werkzeug.utils import secure_filename
 import os
 import time
-from config_local import RUTA_DESTINO, DB_CONFIG
+from config import RUTA_DESTINO, DB_CONFIG
 
 app = Flask(__name__)
-CORS(app) 
+CORS(app)
 
 class Catalogo:
     def __init__(self, host, user, password, database):
@@ -37,12 +36,12 @@ class Catalogo:
         self.conn.commit()
         self.cursor.close()
         self.cursor = self.conn.cursor(dictionary=True)
-        
-    def agregar_producto(self, descripcion, cantidad, precio, imagen):       
+
+    def agregar_producto(self, descripcion, cantidad, precio, imagen):
         sql = "INSERT INTO productos (descripcion, cantidad, precio, imagen_url) VALUES (%s, %s, %s, %s)"
         valores = (descripcion, cantidad, precio, imagen)
 
-        self.cursor.execute(sql, valores)        
+        self.cursor.execute(sql, valores)
         self.conn.commit()
         return self.cursor.lastrowid
 
@@ -84,16 +83,12 @@ class Catalogo:
 #--------------------------------------------------------------------
 # Cuerpo del programa
 #--------------------------------------------------------------------
-catalogo = Catalogo(host=DB_CONFIG['host'], user=DB_CONFIG['root'], password=DB_CONFIG['password'], database=DB_CONFIG['database'])
-#catalogo = Catalogo(host='USUARIO.mysql.pythonanywhere-services.com', user='USUARIO', password='CLAVE', database='USUARIO$romanov_db')
-
-
-#Al subir al servidor, deberá utilizarse la siguiente ruta. USUARIO debe ser reemplazado por el nombre de usuario de Pythonanywhere
-#RUTA_DESTINO = '/home/USUARIO/mysite/static/imagenes'
+catalogo = Catalogo(host=DB_CONFIG['host'], user=DB_CONFIG['user'], password=DB_CONFIG['password'], database=DB_CONFIG['database'])
 
 #--------------------------------------------------------------------S
 # Listar todos los productos
 #--------------------------------------------------------------------
+@cross_origin
 @app.route("/productos", methods=["GET"])
 def listar_productos():
     productos = catalogo.listar_productos()
@@ -113,40 +108,42 @@ def mostrar_producto(codigo):
 #--------------------------------------------------------------------
 # Agregar un producto
 #--------------------------------------------------------------------
+@cross_origin
 @app.route("/productos", methods=["POST"])
 def agregar_producto():
     descripcion = request.form['descripcion']
     cantidad = request.form['cantidad']
     precio = request.form['precio']
-    imagen = request.files['imagen'] 
+    imagen = request.files['imagen']
     nombre_imagen=""
-    nombre_imagen = secure_filename(imagen.filename) 
-    nombre_base, extension = os.path.splitext(nombre_imagen) 
+    nombre_imagen = secure_filename(imagen.filename)
+    nombre_base, extension = os.path.splitext(nombre_imagen)
     nombre_imagen = f"{nombre_base}_{int(time.time())}{extension}"
 
     nuevo_codigo = catalogo.agregar_producto(descripcion, cantidad, precio, nombre_imagen)
-    if nuevo_codigo:    
+    if nuevo_codigo:
         imagen.save(os.path.join(RUTA_DESTINO, nombre_imagen))
         return jsonify({"mensaje": "Producto agregado correctamente.", "codigo": nuevo_codigo, "imagen": nombre_imagen}), 201
     else:
         return jsonify({"mensaje": "Error al agregar el producto."}), 500
-    
+
 #--------------------------------------------------------------------
 # Modificar un producto según su código
 #--------------------------------------------------------------------
+@cross_origin
 @app.route("/productos/<int:codigo>", methods=["PUT"])
 def modificar_producto(codigo):
     nueva_descripcion = request.form.get("descripcion")
     nueva_cantidad = request.form.get("cantidad")
     nuevo_precio = request.form.get("precio")
-    
+
     if 'imagen' in request.files:
         imagen = request.files['imagen']
-        nombre_imagen = secure_filename(imagen.filename) 
+        nombre_imagen = secure_filename(imagen.filename)
         nombre_base, extension = os.path.splitext(nombre_imagen)
         nombre_imagen = f"{nombre_base}_{int(time.time())}{extension}"
         imagen.save(os.path.join(RUTA_DESTINO, nombre_imagen))
-    
+
         producto = catalogo.consultar_producto(codigo)
         if producto:
             imagen_vieja = producto["imagen_url"]
@@ -158,7 +155,7 @@ def modificar_producto(codigo):
         if producto:
             nombre_imagen = producto["imagen_url"]
 
-    if catalogo.modificar_producto(codigo, nueva_descripcion, nueva_cantidad, nuevo_precio, nombre_imagen, nuevo_proveedor):
+    if catalogo.modificar_producto(codigo, nueva_descripcion, nueva_cantidad, nuevo_precio, nombre_imagen):
         return jsonify({"mensaje": "Producto modificado"}), 200
     else:
         return jsonify({"mensaje": "Producto no encontrado"}), 404
@@ -166,10 +163,11 @@ def modificar_producto(codigo):
 #--------------------------------------------------------------------
 # Eliminar un producto según su código
 #--------------------------------------------------------------------
+@cross_origin
 @app.route("/productos/<int:codigo>", methods=["DELETE"])
 def eliminar_producto(codigo):
     producto = catalogo.consultar_producto(codigo)
-    if producto: # Si el producto existe, verifica si hay una imagen asociada en el servidor.
+    if producto: 
         imagen_vieja = producto["imagen_url"]
         ruta_imagen = os.path.join(RUTA_DESTINO, imagen_vieja)
         if os.path.exists(ruta_imagen):

@@ -1,5 +1,3 @@
-import os
-
 # Ruta donde se guardarán las imágenes
 RUTA_DESTINO = ''
 

@@ -1,8 +1,14 @@
+let URL;
 
-const URL = "http://127.0.0.1:5000/"
-//Al subir al servidor, deberá utilizarse la siguiente ruta. USUARIO debe ser reemplazado por el nombre de usuario de Pythonanywhere
-//const URL = "https://USUARIO.pythonanywhere.com/"
-
+document.addEventListener("DOMContentLoaded", function() {
+    // Carga el archivo de configuración JSON
+    fetch('../../config.json')
+        .then(response => response.json())
+        .then(config => {
+            URL = config.apiBaseUrl;
+        })
+        .catch(error => console.error('Error al cargar el archivo de configuración:', error));
+});
 
 document.getElementById('formulario').addEventListener('submit', function (event) {
     event.preventDefault();  

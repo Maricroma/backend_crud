@@ -1,8 +1,4 @@
-const URL = "http://127.0.0.1:5000/"
-
-// Al subir al servidor, deberá utilizarse la siguiente ruta. USUARIO debe ser reemplazado por el nombre de usuario de Pythonanywhere
-//const URL = "https://USUARIO.pythonanywhere.com/"
-
+let URL, imgUrl;
 let codigo = '';
 let descripcion = '';
 let cantidad = '';
@@ -12,9 +8,22 @@ let imagenSeleccionada = null;
 let imagenUrlTemp = null;
 let mostrarDatosProducto = false;
 
-document.getElementById('form-obtener-producto').addEventListener('submit', obtenerProducto);
-document.getElementById('form-guardar-cambios').addEventListener('submit', guardarCambios);
-document.getElementById('nuevaImagen').addEventListener('change', seleccionarImagen);
+document.addEventListener("DOMContentLoaded", function() {
+    // Carga el archivo de configuración JSON
+    fetch('../../config.json')
+        .then(response => response.json())
+        .then(config => {
+            URL = config.apiBaseUrl;
+            imgUrl = config.apiImgUrl;
+    
+            document.getElementById('form-obtener-producto').addEventListener('submit', obtenerProducto);
+            document.getElementById('form-guardar-cambios').addEventListener('submit', guardarCambios);
+            document.getElementById('nuevaImagen').addEventListener('change', seleccionarImagen);
+
+        })
+        .catch(error => console.error('Error al cargar el archivo de configuración:', error));
+});
+
 
 function obtenerProducto(event) {
     event.preventDefault();
@@ -36,6 +45,7 @@ function obtenerProducto(event) {
             mostrarFormulario();
         })
         .catch(error => {
+            console.error(error);
             alert('Código no encontrado.');
         });
 }
@@ -46,19 +56,6 @@ function mostrarFormulario() {
         document.getElementById('cantidadModificar').value = cantidad;
         document.getElementById('precioModificar').value = precio;
 
-        const imagenActual = document.getElementById('imagen-actual');
-        if (imagen_url && !imagenSeleccionada) { // Verifica si imagen_url no está vacía y no se ha seleccionado una imagen
-
-            imagenActual.src = '../static/imagenes/' + imagen_url;                    
-            
-            //Al subir al servidor, deberá utilizarse la siguiente ruta. USUARIO debe ser reemplazado por el nombre de usuario de Pythonanywhere
-            //imagenActual.src = 'https://www.pythonanywhere.com/user/USUARIO/files/home/USUARIO/mysite/static/imagenes/' + imagen_url;
-
-            imagenActual.style.display = 'block'; // Muestra la imagen actual
-        } else {
-            imagenActual.style.display = 'none'; // Oculta la imagen si no hay URL
-        }
-
         document.getElementById('datos-producto').style.display = 'block';
     } else {
         document.getElementById('datos-producto').style.display = 'none';
@@ -68,7 +65,7 @@ function mostrarFormulario() {
 function seleccionarImagen(event) {
     const file = event.target.files[0];
     imagenSeleccionada = file;
-    imagenUrlTemp = URL.createObjectURL(file); // Crea una URL temporal para la vista previa
+    imagenUrlTemp = URL.createObjectURL(file);
 
     const imagenVistaPrevia = document.getElementById('imagen-vista-previa');
     imagenVistaPrevia.src = imagenUrlTemp;
@@ -94,9 +91,9 @@ function guardarCambios(event) {
     })
         .then(response => {
             if (response.ok) {
-                return response.json()
+                return response.json();
             } else {
-                throw new Error('Error al guardar los cambios del producto.')
+                throw new Error('Error al guardar los cambios del producto.');
             }
         })
         .then(data => {
@@ -115,9 +112,6 @@ function limpiarFormulario() {
     document.getElementById('cantidadModificar').value = '';
     document.getElementById('precioModificar').value = '';
     document.getElementById('nuevaImagen').value = '';
-
-    const imagenActual = document.getElementById('imagen-actual');
-    imagenActual.style.display = 'none';
 
     const imagenVistaPrevia = document.getElementById('imagen-vista-previa');
     imagenVistaPrevia.style.display = 'none';
