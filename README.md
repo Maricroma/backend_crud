@@ -1,4 +1,4 @@
-# backend_crud
+# romanov_wines_crud
 Proyecto CRUD desarrollado en el curso de FullStack Python 2024
 
 backend con Python + Flask
